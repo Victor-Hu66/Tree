@@ -1,3 +1,4 @@
+
 from rest_framework import serializers
 from .models import Linktree, Button
                 
@@ -11,7 +12,7 @@ class LinkbuttonsSerializer(serializers.ModelSerializer):
 
         
 class LinktreeSerializer(serializers.ModelSerializer): 
-    button = LinkbuttonsSerializer(many=True)
+    button = LinkbuttonsSerializer(many=True, required=False)
 
     class Meta:
         model = Linktree
@@ -20,11 +21,11 @@ class LinktreeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         print(validated_data) 
-        linkbuttons_data = validated_data.pop('linkbuttons')
+        button_data = validated_data.pop('button')
         # print(linkbuttons_data)
         linktree = Linktree.objects.create(**validated_data)
         
-        for button in linkbuttons_data:
+        for button in button_data:
             linktree.button.add(Button.objects.create(**button))
         linktree.save()    
         
